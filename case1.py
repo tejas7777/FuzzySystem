@@ -72,22 +72,3 @@ class Temperature:
     def calculate_mf(self,value):
         return [self.low_mf(value),self.normal_mf(value),self.high_mf(value)]
     
-    
-        
-        
-        
-        
-
-class FuzzySingleton:
-
-    def __init__(self):
-        pass
-    
-    
-    
-
-TemperatureVariable = Temperature()
-
-TemperatureVariable.plot(36.2)
-print(TemperatureVariable.calculate_mf(36.2))
-        
