@@ -5,7 +5,6 @@ from tnorm import Tnorm
 import pandas as pd
 import matplotlib.pyplot as plt
 
-
 class Urgency:
     universe = np.arange(0,101,1)
     low = {0:1,25:1, 50:0}
@@ -79,7 +78,7 @@ class Urgency:
         return (value-x[0])/(x[1]-x[0])
 
 
-    def generate_output_set(self,mf,term):
+    def  generate_output_set(self,mf,term):
         input_range = None
         callable_function = None
 
@@ -98,11 +97,13 @@ class Urgency:
             input_range = [x[0],x[-1]]
             callable_function = self.high_mf
 
-        output_set = {}
+        output_set = []
 
         for xi in range(input_range[0], input_range[-1]+1):
-            #output_set.append((min(mf,callable_function(xi)), xi))
-            output_set[xi] = min(mf, callable_function(xi))
+            output_set.append((min(mf,callable_function(xi)), xi))
+            #output_set[xi] = min(mf, callable_function(xi))
 
         return output_set
+    
+
 
