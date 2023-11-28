@@ -367,7 +367,6 @@ class Age:
         if len(X) == 0:
             return 0
         
-        print(X)
         
         x_values = X
         mu_A_values = np.array([self.old_mf(x) for x in x_values])
@@ -376,8 +375,6 @@ class Age:
         # Calculate the integrals using the trapezoidal rule
         integral_sSH = np.trapz(np.minimum(mu_A_values, mu_I_values), x=x_values)
         integral_mu_I = np.trapz(mu_I_values, x=x_values)
-
-        print(integral_sSH,integral_sSH)
 
         if integral_sSH == 0 or integral_mu_I == 0:
             return 0

@@ -6,6 +6,7 @@ import pandas as pd
 from consequent import Urgency
 from tconorm import Tconorm
 import matplotlib.pyplot as plt
+from defuzzifier import Defuzzifier
 
     
 class SingletonFuzzySet:
@@ -17,6 +18,7 @@ class SingletonFuzzySet:
     Urgency = Urgency()
     Tconorm = Tconorm()
     final_set = None
+    Defuzzifier = Defuzzifier()
     
     
     def __init__(self, temperature:list, headache:list,age:list):
@@ -116,39 +118,23 @@ class SingletonFuzzySet:
         plt.plot(x, y, label='Result', color='black')
         plt.show()
 
-    def defuzzyfy(self):
-        if self.final_set is None:
-            return
-        
-        x = list(self.final_set.keys())
-        y = list(self.final_set.values())
-
-        nominator_sum = 0
-        denominator_sum = 0
-
-        for i in range(len(x)):
-            nominator_sum = nominator_sum + x[i]*y[i]
-            denominator_sum = denominator_sum + y[i]
-
-        if nominator_sum == 0 or denominator_sum == 0:
-            return 0
-
-        return nominator_sum/denominator_sum
+    def defuzzyfy(self,defuzzifier):
+        return self.Defuzzifier.apply(self.final_set,defuzzifier=defuzzifier)
 
         
 
 
         
         
-if __name__ == '__main__':
-    SingletonFuzzySet = SingletonFuzzySet(temperature=35.5,age=75.5,headache=5.5)
-    SingletonFuzzySet.get_input_plots()
-    SingletonFuzzySet.calculate_firing_strengths()
-    #print(NonSingletonFuzzySet.firing_strengths)
-    SingletonFuzzySet.process_ruleset(tnorm='hamacher')
-    SingletonFuzzySet.plot_fuzzified_output()
-    print(SingletonFuzzySet.defuzzyfy())
-    print(SingletonFuzzySet.final_set)
+# if __name__ == '__main__':
+#     SingletonFuzzySet = SingletonFuzzySet(temperature=35.5,age=75.5,headache=5.5)
+#     SingletonFuzzySet.get_input_plots()
+#     SingletonFuzzySet.calculate_firing_strengths()
+#     #print(NonSingletonFuzzySet.firing_strengths)
+#     SingletonFuzzySet.process_ruleset(tnorm='hamacher')
+#     SingletonFuzzySet.plot_fuzzified_output()
+#     print(SingletonFuzzySet.defuzzyfy(defuzzifier='centroid'))
+#     print(SingletonFuzzySet.final_set)
 
         
         

@@ -1,8 +1,10 @@
 temperature,headache,age,urgency
-high,high,,high
-high,low,,moderate
+high,low,young_adult^adult,moderate
 normal,low,,low
 high,high,young_adult^adult,moderate
 high,high,pediatric^old,high
 normal,high,pediatric^old,high
 low,,,high
+normal,high,young_adult^adult,moderate
+normal,moderate,young_adult^adult,low
+high,,pediatric^old,high

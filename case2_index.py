@@ -6,6 +6,7 @@ import pandas as pd
 from consequent import Urgency
 from tconorm import Tconorm
 import matplotlib.pyplot as plt
+from defuzzifier import Defuzzifier
 
     
 class NonSingletonFuzzySet:
@@ -17,6 +18,7 @@ class NonSingletonFuzzySet:
     Urgency = Urgency()
     Tconorm = Tconorm()
     final_set = None
+    Defuzzifier = Defuzzifier()
     
     
     def __init__(self, temperature:list, headache:list,age:list):
@@ -85,10 +87,10 @@ class NonSingletonFuzzySet:
                     firing_strengths = []
                     for val in age_value:
                         firing_strengths.append(age_firing_strength.get(val))
+
                     tnorm_input.append(max(firing_strengths))
                 else:
                     tnorm_input.append(age_firing_strength.get(age_value))
-
 
             final_firing = self.Tnorm.apply(input=tnorm_input,tnorm=tnorm)
 
@@ -116,34 +118,21 @@ class NonSingletonFuzzySet:
         plt.plot(x, y, label='Result', color='black')
         plt.show()
 
-    def defuzzyfy(self):
-        if self.final_set is None:
-            return
-        
-        x = list(self.final_set.keys())
-        y = list(self.final_set.values())
+    def defuzzyfy(self,defuzzifier):
+        return self.Defuzzifier.apply(self.final_set,defuzzifier=defuzzifier)
 
-        nominator_sum = 0
-        denominator_sum = 0
-
-        for i in range(len(x)):
-            nominator_sum = nominator_sum + x[i]*y[i]
-            denominator_sum = denominator_sum + y[i]
-
-        if nominator_sum == 0 or denominator_sum == 0:
-            return 0
-
-        return nominator_sum/denominator_sum
         
         
-if __name__ == '__main__':
-    NonSingletonFuzzySet = NonSingletonFuzzySet(temperature=[35,36],age=[70,80],headache=[5,6])
-    NonSingletonFuzzySet.get_input_plots()
-    NonSingletonFuzzySet.calculate_firing_strengths()
-    #print(NonSingletonFuzzySet.firing_strengths)
-    NonSingletonFuzzySet.process_ruleset(tnorm='hamacher')
-    NonSingletonFuzzySet.plot_fuzzified_output()
-    print(NonSingletonFuzzySet.defuzzyfy())
+# if __name__ == '__main__':
+#     NonSingletonFuzzySet = NonSingletonFuzzySet(temperature=[35,36],age=[70,80],headache=[5,6])
+#     NonSingletonFuzzySet.get_input_plots()
+#     NonSingletonFuzzySet.calculate_firing_strengths()
+#     #print(NonSingletonFuzzySet.firing_strengths)
+#     NonSingletonFuzzySet.process_ruleset(tnorm='hamacher')
+#     NonSingletonFuzzySet.plot_fuzzified_output()
+#     print(NonSingletonFuzzySet.defuzzyfy(defuzzifier='centroid'))
+#     print(NonSingletonFuzzySet.defuzzyfy(defuzzifier='bisector'))
+#     print(NonSingletonFuzzySet.defuzzyfy(defuzzifier='height'))
 
         
         
