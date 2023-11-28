@@ -11,7 +11,11 @@ class Tnorm:
         if tnorm == 'einstein':
             return self.einstein_t_norm(input=input)
         if tnorm == 'bounded_difference':
-             return self.bounded_deference(input)
+            return self.bounded_deference(input)
+        if tnorm == 'hamacher':
+            return self.hamacher(rule_strengths=input)
+             
+             
              
 
     def tnorm_min(self,input:list):
@@ -22,4 +26,7 @@ class Tnorm:
     
     def bounded_deference(self,rule_strengths):
         return np.max([0, np.sum(rule_strengths) - 1])
+    
+    def hamacher(self,rule_strengths):
+        return np.prod(rule_strengths) / (np.sum(rule_strengths) - np.prod(rule_strengths) + 1)
     

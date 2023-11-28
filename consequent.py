@@ -16,24 +16,26 @@ class Urgency:
         x = np.array(list(self.low.keys()))
         y = np.array(list(self.low.values()))
         
-        plt.plot(x, y, label='Low', color='black')
+        plt.plot(x, y, label='Low')
         
         #Plot normal
         x = np.array(list(self.moderate.keys()))
         y = np.array(list(self.moderate.values()))
         
-        plt.plot(x, y, label='Moderate', color='black')
+        plt.plot(x, y, label='Moderate')
         
         #Plot High
         x = np.array(list(self.high.keys()))
         y = np.array(list(self.high.values()))
         
-        plt.plot(x, y, label='High', color='black')
+        plt.plot(x, y, label='High')
         
         #Plot input
         #plt.plot(self.input_x, self.input_mf, linestyle='--', color='red')
 
         plt.grid(True)
+        plt.legend()
+
         plt.xlabel('Urgency')
         plt.ylabel('μ(x)')
         
@@ -105,5 +107,3 @@ class Urgency:
 
         return output_set
     
-
-

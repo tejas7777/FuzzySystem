@@ -44,25 +44,27 @@ class Temperature:
         x = np.array(list(self.low.keys()))
         y = np.array(list(self.low.values()))
         
-        plt.plot(x, y, label='Low', color='black')
+        plt.plot(x, y, label='Low')
         
         #Plot normal
         x = np.array(list(self.normal.keys()))
         y = np.array(list(self.normal.values()))
         
-        plt.plot(x, y, label='Normal', color='black')
+        plt.plot(x, y, label='Normal')
         
         #Plot High
         x = np.array(list(self.high.keys()))
         y = np.array(list(self.high.values()))
         
-        plt.plot(x, y, label='High', color='black')
+        plt.plot(x, y, label='High')
         
         #Plot input
-        plt.plot(self.input_x, self.input_mf, linestyle='--', color='red')
+        plt.plot(self.input_x, self.input_mf, linestyle='--', color='red', label='I')
 
 
         plt.grid(True)
+        plt.legend()
+
         plt.xlabel('Temperature')
         plt.ylabel('μ(x)')
         
@@ -181,7 +183,7 @@ class Age:
     universe = np.round(np.arange(0,130.1,0.1),1)
     pediatric = {0:1, 10:1, 18:0}
     young_adult = {15:0, 25:1, 35:0}
-    middle_aged = {30:0,45:1,60:0}
+    adult = {30:0,45:1,60:0}
     old = {50:0,60:1,130:1}
     input_mf = None
     input_x = None
@@ -212,29 +214,30 @@ class Age:
         #Plot pediatric
         x = np.array(list(self.pediatric.keys()))
         y = np.array(list(self.pediatric.values()))
-        plt.plot(x, y, label='Pediatric', color='black')
+        plt.plot(x, y, label='Pediatric')
         
         #Plot young adult
         x = np.array(list(self.young_adult.keys()))
         y = np.array(list(self.young_adult.values()))  
-        plt.plot(x, y, label='Young Adult', color='black')
+        plt.plot(x, y, label='Young Adult')
         
-        #Plot middle_aged
-        x = np.array(list(self.middle_aged.keys()))
-        y = np.array(list(self.middle_aged.values()))
+        #Plot adult
+        x = np.array(list(self.adult.keys()))
+        y = np.array(list(self.adult.values()))
         
-        plt.plot(x, y, label='Adult', color='black')
+        plt.plot(x, y, label='Adult')
         
         #Plot High
         x = np.array(list(self.old.keys()))
         y = np.array(list(self.old.values()))
         
-        plt.plot(x, y, label='Old', color='black')
+        plt.plot(x, y, label='Old')
 
         #Plot input
-        plt.plot(self.input_x, self.input_mf, linestyle='--', color='red')
+        plt.plot(self.input_x, self.input_mf, linestyle='--', color='red', label='I')
 
         plt.grid(True)
+        plt.legend()
         
         plt.xlabel('Age')
         plt.ylabel('μ(x)')
@@ -269,8 +272,8 @@ class Age:
         return (x[2] - value) / (x[2] - x[1])
         
         
-    def middle_aged_mf(self, value):
-        x = list(self.middle_aged.keys())
+    def adult_mf(self, value):
+        x = list(self.adult.keys())
 
         if value < x[0] or value > x[2]:
             return 0
@@ -337,15 +340,15 @@ class Age:
 
         
         
-    def calculate_middle_aged_mf_firing_strength(self):
-        middle_aged_x = list(self.middle_aged.keys())
-        X = np.intersect1d( self.input_x, np.linspace(middle_aged_x[0], middle_aged_x[-1], int((middle_aged_x[-1] - middle_aged_x[0]) / 0.1) + 1))
+    def calculate_adult_mf_firing_strength(self):
+        adult_x = list(self.adult.keys())
+        X = np.intersect1d( self.input_x, np.linspace(adult_x[0], adult_x[-1], int((adult_x[-1] - adult_x[0]) / 0.1) + 1))
         
         if len(X) == 0:
             return 0
         
         x_values = X
-        mu_A_values = np.array([self.middle_aged_mf(x) for x in x_values])
+        mu_A_values = np.array([self.adult_mf(x) for x in x_values])
         mu_I_values = np.array([self.get_pdf_value(x) for x in x_values])
 
         # Calculate the integrals using the trapezoidal rule
@@ -385,7 +388,7 @@ class Age:
         if self.input_mf is None:
             return None
         
-        return {"pediatric":self.calculate_pediatric_mf_firing_strength(), "young_adult": self.calculate_young_adult_mf_firing_strength(),"middle_aged": self.calculate_middle_aged_mf_firing_strength(), "old": self.calculate_old_mf_firing_strength()}
+        return {"pediatric":self.calculate_pediatric_mf_firing_strength(), "young_adult": self.calculate_young_adult_mf_firing_strength(),"adult": self.calculate_adult_mf_firing_strength(), "old": self.calculate_old_mf_firing_strength()}
         
     
 class HeadAche:
@@ -416,9 +419,14 @@ class HeadAche:
         plt.plot(x, y, label='High')
 
         #Plot input
-        plt.plot(self.input_x, self.input_mf, linestyle='--', color='red')
+        plt.plot(self.input_x, self.input_mf, linestyle='--', color='red', label = 'I')
+
+        plt.xlabel('Headache')
+        plt.ylabel('μ(x)')
+        
 
         plt.grid(True)
+        plt.legend()
         
         #show
         plt.show()
@@ -474,7 +482,7 @@ class HeadAche:
     def set_input_interval(self,interval):
         np_interval = np.array(interval)
         mu = np_interval.mean()
-        sigma = 0.4
+        sigma = 0.25
         self.input_x = np.linspace(interval[0], interval[1], int((interval[1] - interval[0]) / 0.1) + 1)
         
         pdf = np.exp(-0.5 * ((self.input_x - mu) / sigma) ** 2)

@@ -43,25 +43,57 @@ class NonSingletonFuzzySet:
         #Iterate our rule sets
         rule_tnorm_outputs = []
 
-        print('RULES FIRINGS:\n', self.firing_strengths)
 
         for i,row in df.iterrows():
             tnorm_input = []
             row = row.fillna('NaN')
 
             if row["temperature"]  != 'NaN' and self.firing_strengths["temperature"] is not None:
-                tnorm_input.append(self.firing_strengths["temperature"].get(row["temperature"]))
+                #Get the rule value for temperature for eg. temperature is low
+                temperature_value:str = row["temperature"]
+                #Get the firing strength for temperature
+                temperature_firing_strength:dict = self.firing_strengths["temperature"]
+                #Check if rule value has an or condition represented by ^
+                if '^' in temperature_value:
+                    #If or condition, eg. LOW ^ MODERATE, we take max(LOW,MODERATE)
+                    temperature_value = temperature_value.split('^')
+                    firing_strengths = []
+                    for val in temperature_value:
+                        firing_strengths.append(temperature_firing_strength.get(val))
+
+                    tnorm_input.append(max(firing_strengths))
+                else:
+                    #Since no OR condition, continue as normal
+                    tnorm_input.append(temperature_firing_strength.get(temperature_value))
             if row["headache"]  != 'NaN' and self.firing_strengths["headache"] is not None:
-                tnorm_input.append(self.firing_strengths["headache"].get(row["headache"]))
-            if row["age"] != 'NaN' and self.firing_strengths["age"] is not None:
-                tnorm_input.append(self.firing_strengths["age"].get(row['age']))
+                #Same as above
+                headache_value:str = row["headache"]
+                headache_firing_strength:dict = self.firing_strengths["headache"]
+                if '^' in headache_value:
+                    headache_value = headache_value.split('^')
+                    firing_strengths = []
+                    for val in headache_value:
+                        firing_strengths.append(headache_firing_strength.get(val))
+                    tnorm_input.append(max(firing_strengths))
+                else:
+                    tnorm_input.append(headache_firing_strength.get(headache_value))
+            if row["age"]  != 'NaN' and self.firing_strengths["age"] is not None:
+                age_value:str = row["age"]
+                age_firing_strength:dict = self.firing_strengths["age"]
+                if '^' in age_value:
+                    age_value = age_value.split('^')
+                    firing_strengths = []
+                    for val in age_value:
+                        firing_strengths.append(age_firing_strength.get(val))
+                    tnorm_input.append(max(firing_strengths))
+                else:
+                    tnorm_input.append(age_firing_strength.get(age_value))
 
 
             final_firing = self.Tnorm.apply(input=tnorm_input,tnorm=tnorm)
 
             rule_tnorm_outputs.append((final_firing,row['urgency']))
 
-        print(rule_tnorm_outputs)
 
 
         fuzzified_area = []
@@ -70,7 +102,6 @@ class NonSingletonFuzzySet:
 
 
         final_set = self.Tconorm.apply(input=fuzzified_area, tconorm='max')
-
         self.final_set = dict(sorted(final_set.items()))
 
 
@@ -103,10 +134,6 @@ class NonSingletonFuzzySet:
             return 0
 
         return nominator_sum/denominator_sum
-
-        
-
-
         
         
 if __name__ == '__main__':
@@ -114,7 +141,7 @@ if __name__ == '__main__':
     NonSingletonFuzzySet.get_input_plots()
     NonSingletonFuzzySet.calculate_firing_strengths()
     #print(NonSingletonFuzzySet.firing_strengths)
-    NonSingletonFuzzySet.process_ruleset(tnorm='bounded_difference')
+    NonSingletonFuzzySet.process_ruleset(tnorm='hamacher')
     NonSingletonFuzzySet.plot_fuzzified_output()
     print(NonSingletonFuzzySet.defuzzyfy())
 
